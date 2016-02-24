@@ -1,50 +1,52 @@
 package jp.co.dk.databaseexportdocuments.controler;
 
+import java.io.File;
+import java.io.IOException;
+
+import jp.co.dk.databaseexportdocuments.DBWorkBook;
+import jp.co.dk.databaseexportdocuments.DBWorkSheet;
 import jp.co.dk.datastoremanager.DataStoreManager;
 import jp.co.dk.datastoremanager.exception.DataStoreManagerException;
 import jp.co.dk.datastoremanager.property.DataStoreManagerProperty;
 import jp.co.dk.datastoremanager.rdb.AbstractDataBaseAccessObject;
-import jp.co.dk.datastoremanager.rdb.DataBaseRecord;
-import jp.co.dk.datastoremanager.rdb.DataConvertable;
 import jp.co.dk.datastoremanager.rdb.Sql;
+import jp.co.dk.document.excel.exception.ExcelDocumentException;
 import jp.co.dk.property.exception.PropertyException;
 
 import org.apache.commons.cli.Options;
 
 public class ExcelCommandControler extends AbtractCommandControler {
-
-	public static void main(String[] args) {
-		ExcelCommandControler controler = new ExcelCommandControler();
-		controler.execute(args);
-	}
-
+	
 	@Override
 	public void execute() {
-		try {
-			DataStoreManager dsm = new DataStoreManager(new DataStoreManagerProperty());
-			dsm.startTrunsaction();
-			AbstractDataBaseAccessObject dao = (AbstractDataBaseAccessObject)dsm.getDataAccessObject("default");
-			dao.selectMulti(new Sql("select * from USERS;"), new DataConvertable() {
-				public DataConvertable convert(DataBaseRecord dataBaseRecord) throws DataStoreManagerException {
-					for (String columnName : dataBaseRecord.getColumns()) {
-						System.out.print(columnName);
-						System.out.print(":");
-						System.out.print(dataBaseRecord.getString(columnName));
-						System.out.println();
-					}
-					return null;
-				}
-			});
-			dsm.finishTrunsaction();
+		try (DataStoreManager dataStoreManager = new DataStoreManager(new DataStoreManagerProperty())) {
+			dataStoreManager.startTrunsaction();
+			AbstractDataBaseAccessObject dao = (AbstractDataBaseAccessObject)dataStoreManager.getDataAccessObject("default");
+			DBWorkBook workbook = new DBWorkBook(new File("/tmp/sample.xls"), dao);
+			DBWorkSheet sheet = (DBWorkSheet)workbook.createSheet("aaaaaa");
+			sheet.write(new Sql("select * from USERS"));
+			sheet.write(new Sql("select * from USERS"));
+			sheet.write(new Sql("select * from USERS"));
+			sheet.write(new Sql("select * from USERS"));
+			sheet.write(new Sql("select * from USERS"));
+			sheet.write(new Sql("select * from USERS"));
+			workbook.write();
 		} catch (DataStoreManagerException e) {
-			System.out.println(e.toString());
+			System.out.println(e.toString());e.printStackTrace();
 			System.exit(1);
 		} catch (PropertyException e) {
-			System.out.println(e.toString());
+			System.out.println(e.toString());e.printStackTrace();
+			System.exit(1);
+		} catch (ExcelDocumentException e) {
+			System.out.println(e.toString());e.printStackTrace();
+			System.exit(1);
+		} catch (IOException e) {
+			System.out.println(e.toString());e.printStackTrace();
 			System.exit(1);
 		}
 	}
-
+	
+	
 	@Override
 	protected String getCommandName() {
 		return "db_to_excel";
@@ -62,5 +64,9 @@ public class ExcelCommandControler extends AbtractCommandControler {
 //				.create("f")
 //		);
 	}
-
+	
+	public static void main(String[] args) {
+		ExcelCommandControler controler = new ExcelCommandControler();
+		controler.execute(args);
+	}
 }

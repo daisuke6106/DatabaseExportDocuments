@@ -5,42 +5,54 @@ import java.io.IOException;
 
 import jp.co.dk.databaseexportdocuments.DBWorkBook;
 import jp.co.dk.databaseexportdocuments.DBWorkSheet;
+import jp.co.dk.databaseexportdocuments.SqlFile;
 import jp.co.dk.datastoremanager.DataStoreManager;
 import jp.co.dk.datastoremanager.exception.DataStoreManagerException;
 import jp.co.dk.datastoremanager.property.DataStoreManagerProperty;
 import jp.co.dk.datastoremanager.rdb.AbstractDataBaseAccessObject;
 import jp.co.dk.datastoremanager.rdb.Sql;
 import jp.co.dk.document.excel.exception.ExcelDocumentException;
+import jp.co.dk.document.exception.DocumentException;
 import jp.co.dk.property.exception.PropertyException;
 
+import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 
 public class ExcelCommandControler extends AbtractCommandControler {
 	
 	@Override
 	public void execute() {
+
+		java.io.File sqlFile    = new java.io.File(this.cmd.getOptionValue("f"));
+		java.io.File outputFile = new java.io.File(this.cmd.getOptionValue("o"));
+		
 		try (DataStoreManager dataStoreManager = new DataStoreManager(new DataStoreManagerProperty())) {
 			dataStoreManager.startTrunsaction();
 			AbstractDataBaseAccessObject dao = (AbstractDataBaseAccessObject)dataStoreManager.getDataAccessObject("default");
-			DBWorkBook workbook = new DBWorkBook(new File("/tmp/sample.xls"), dao);
-			DBWorkSheet sheet = (DBWorkSheet)workbook.createSheet("aaaaaa");
-			sheet.write(new Sql("select * from USERS"));
-			sheet.write(new Sql("select * from USERS"));
-			sheet.write(new Sql("select * from USERS"));
-			sheet.write(new Sql("select * from USERS"));
-			sheet.write(new Sql("select * from USERS"));
-			sheet.write(new Sql("select * from USERS"));
-			workbook.write();
+			
+			SqlFile    sqlfile  = new SqlFile(sqlFile);
+			// DBWorkBook workbook = new DBWorkBook(outputFile, dao);
+			
+			/*
+			 * echo "SELECT * FROM USERS WHERE USERID=&{USERID@CHAR};">/tmp/test.sql
+			 */
+			for (Sql sql : sqlfile.getSqlList()) {
+				System.out.println(sql);
+			}
+			
+			// DBWorkSheet sheet = (DBWorkSheet)workbook.createSheet("result");
+			// sheet.write(new Sql("select * from USERS"));
+			// workbook.write();
 		} catch (DataStoreManagerException e) {
 			System.out.println(e.toString());e.printStackTrace();
 			System.exit(1);
 		} catch (PropertyException e) {
 			System.out.println(e.toString());e.printStackTrace();
 			System.exit(1);
-		} catch (ExcelDocumentException e) {
+		} catch (IOException e) {
 			System.out.println(e.toString());e.printStackTrace();
 			System.exit(1);
-		} catch (IOException e) {
+		} catch (DocumentException e) {
 			System.out.println(e.toString());e.printStackTrace();
 			System.exit(1);
 		}
@@ -54,15 +66,8 @@ public class ExcelCommandControler extends AbtractCommandControler {
 
 	@Override
 	protected void getOptions(Options options) {
-//		options.addOption(
-//			OptionBuilder
-//				.isRequired(true)
-//				.hasArg(true)
-//				.withArgName("file")
-//				.withDescription("実行対象のSQLが記載されたファイル")
-//				.withLongOpt("sql_file")
-//				.create("f")
-//		);
+		options.addOption(OptionBuilder.isRequired(true).hasArg(true).withArgName("file"  ).withDescription("実行対象のSQLが記載されたファイル")	.withLongOpt("sql_file").create("f"));
+		options.addOption(OptionBuilder.isRequired(true).hasArg(true).withArgName("output").withDescription("出力対象先"                      )	.withLongOpt("output"  ).create("o"));
 	}
 	
 	public static void main(String[] args) {

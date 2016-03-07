@@ -2,10 +2,13 @@ package jp.co.dk.databaseexportdocuments;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jp.co.dk.databaseexportdocuments.exception.DatabaseExportDocumentsException;
 import jp.co.dk.datastoremanager.exception.DataStoreManagerException;
 import jp.co.dk.document.exception.DocumentException;
 import jp.co.dk.document.text.TextFile;
@@ -29,6 +32,12 @@ public class SqlFile extends TextFile {
 	/** 終了行フォーマット */
 	protected static Pattern endFormat     = Pattern.compile("^(.*?);.*$");
 	
+	/** SQL一覧 */
+	protected List<Sql> sqlList;
+	
+	/** 変数一覧 */
+	protected Set<Variable> varList = new HashSet<>();
+	
 	/**
 	 * <p>コンストラクタ</p>
 	 * 読み込みファイルを元にオブジェクトを生成します。<br/>
@@ -39,11 +48,31 @@ public class SqlFile extends TextFile {
 	 * 
 	 * @param file 読み込みファイル
 	 * @throws DocumentException 上記条件にてファイルの読み込みに失敗した場合 
+	 * @throws DataStoreManagerException SQLオブジェクトの生成に失敗した場合
+	 * @throws DatabaseExportDocumentsException 不正な変数定義が存在した場合
 	 */
-	public SqlFile(File file) throws DocumentException {
+	public SqlFile(File file) throws DocumentException, DataStoreManagerException, DatabaseExportDocumentsException {
 		super(file);
+		this.sqlList = this.createSqlList();
+		for (Sql sql : this.sqlList) this.varList.addAll(sql.getVariableList());
 	}
-
+	
+	/**
+	 * SQL一覧を取得する。
+	 * @return SQL一覧
+	 */
+	public List<Sql> getSqlList() {
+		return new ArrayList<>(this.sqlList);
+	}
+	
+	/**
+	 * 変数一覧を取得する。
+	 * @return 変数一覧
+	 */
+	public Set<Variable> getVarList() {
+		return new HashSet<>(this.varList);
+	}
+	
 	/**
 	 * SQLファイルに記述されたＳＱＬの一覧を取得します。
 	 * 
@@ -51,7 +80,7 @@ public class SqlFile extends TextFile {
 	 * @throws DocumentException 読み込みに失敗した場合
 	 * @throws DataStoreManagerException SQLオブジェクトの生成に失敗した場合
 	 */
-	public List<Sql> getSqlList() throws DocumentException, DataStoreManagerException {
+	private List<Sql> createSqlList() throws DocumentException, DataStoreManagerException {
 		List<Sql>     sqlList = new ArrayList<>();
 		List<String>  lines   = this.getLines();
 		StringBuilder sql     = new StringBuilder();

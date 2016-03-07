@@ -21,6 +21,9 @@ public class DatabaseExportDocumentsMessage extends AbstractMessage implements S
 	/** 変数型に不明な値が設定されています。 */
 	public static final DatabaseExportDocumentsMessage VALIABLE_TYPE_IS_UNKNOWN = new DatabaseExportDocumentsMessage("E002");
 	
+	/** 変数に不正な値が設定されています。 */
+	public static final DatabaseExportDocumentsMessage VALIABLE_IS_CHECK_ERROR = new DatabaseExportDocumentsMessage("E003");
+	
 	protected DatabaseExportDocumentsMessage(String messageId) {
 		super(messageId);
 	}

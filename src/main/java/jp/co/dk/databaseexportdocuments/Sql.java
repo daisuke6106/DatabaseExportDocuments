@@ -11,7 +11,7 @@ import jp.co.dk.datastoremanager.exception.DataStoreManagerException;
 public class Sql extends jp.co.dk.datastoremanager.rdb.Sql {
 
 	/** バインド変数フォーマット */
-	protected static Pattern variableFormat = Pattern.compile("\\${(.+$)@(.+$)}");
+	protected static Pattern variableFormat = Pattern.compile("\\$\\{(.+?)@(.+?)\\}");
 	
 	public Sql(String sql) throws DataStoreManagerException {
 		super(sql);
@@ -29,4 +29,5 @@ public class Sql extends jp.co.dk.datastoremanager.rdb.Sql {
 		}
 		return varList;
 	}
+	 
 }

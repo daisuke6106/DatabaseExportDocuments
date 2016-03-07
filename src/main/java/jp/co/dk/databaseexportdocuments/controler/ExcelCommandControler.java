@@ -31,18 +31,18 @@ public class ExcelCommandControler extends AbtractCommandControler {
 			AbstractDataBaseAccessObject dao = (AbstractDataBaseAccessObject)dataStoreManager.getDataAccessObject("default");
 			
 			SqlFile    sqlfile  = new SqlFile(sqlFile);
-			// DBWorkBook workbook = new DBWorkBook(outputFile, dao);
+			DBWorkBook workbook = new DBWorkBook(outputFile, dao);
+			DBWorkSheet sheet = (DBWorkSheet)workbook.createSheet("result");
 			
 			/*
-			 * echo "SELECT * FROM USERS WHERE USERID=&{USERID@CHAR};">/tmp/test.sql
+			 * echo "SELECT * FROM USERS;">/tmp/test.sql
 			 */
 			for (Sql sql : sqlfile.getSqlList()) {
-				System.out.println(sql);
+				
+				sheet.write(sql);
 			}
+			workbook.write();
 			
-			// DBWorkSheet sheet = (DBWorkSheet)workbook.createSheet("result");
-			// sheet.write(new Sql("select * from USERS"));
-			// workbook.write();
 		} catch (DataStoreManagerException e) {
 			System.out.println(e.toString());e.printStackTrace();
 			System.exit(1);
@@ -53,6 +53,9 @@ public class ExcelCommandControler extends AbtractCommandControler {
 			System.out.println(e.toString());e.printStackTrace();
 			System.exit(1);
 		} catch (DocumentException e) {
+			System.out.println(e.toString());e.printStackTrace();
+			System.exit(1);
+		} catch (ExcelDocumentException e) {
 			System.out.println(e.toString());e.printStackTrace();
 			System.exit(1);
 		}

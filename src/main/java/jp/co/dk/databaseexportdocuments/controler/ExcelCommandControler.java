@@ -6,6 +6,7 @@ import java.io.IOException;
 import jp.co.dk.databaseexportdocuments.DBWorkBook;
 import jp.co.dk.databaseexportdocuments.DBWorkSheet;
 import jp.co.dk.databaseexportdocuments.SqlFile;
+import jp.co.dk.databaseexportdocuments.exception.DatabaseExportDocumentsException;
 import jp.co.dk.datastoremanager.DataStoreManager;
 import jp.co.dk.datastoremanager.exception.DataStoreManagerException;
 import jp.co.dk.datastoremanager.property.DataStoreManagerProperty;
@@ -56,6 +57,9 @@ public class ExcelCommandControler extends AbtractCommandControler {
 			System.out.println(e.toString());e.printStackTrace();
 			System.exit(1);
 		} catch (ExcelDocumentException e) {
+			System.out.println(e.toString());e.printStackTrace();
+			System.exit(1);
+		} catch (DatabaseExportDocumentsException e) {
 			System.out.println(e.toString());e.printStackTrace();
 			System.exit(1);
 		}

@@ -35,8 +35,6 @@ public enum VariableType {
 	
 	public void check(String target) throws DatabaseExportDocumentsException {
 		Matcher matcher = this.regex.matcher(target);
-		if (!matcher.find()) {
-			throw new DatabaseExportDocumentsException(VALIABLE_IS_CHECK_ERROR);
-		}
+		if (!matcher.find()) throw new DatabaseExportDocumentsException(VALIABLE_IS_CHECK_ERROR);
 	}
 }

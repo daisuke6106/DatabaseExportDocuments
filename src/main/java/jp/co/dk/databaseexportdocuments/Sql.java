@@ -22,8 +22,8 @@ public class Sql extends jp.co.dk.datastoremanager.rdb.Sql {
 		String sql = this.getSql();
 		Matcher variableMatcher = variableFormat.matcher(sql);
 		while(variableMatcher.find()) {
-			String variableName = variableMatcher.group(0);
-			String variableType = variableMatcher.group(1);
+			String variableName = variableMatcher.group(1);
+			String variableType = variableMatcher.group(2);
 			Variable var = new Variable(variableName, variableType);
 			varList.add(var);
 		}

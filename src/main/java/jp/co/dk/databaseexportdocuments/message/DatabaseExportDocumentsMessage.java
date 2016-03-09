@@ -24,6 +24,9 @@ public class DatabaseExportDocumentsMessage extends AbstractMessage implements S
 	/** 変数に不正な値が設定されています。 */
 	public static final DatabaseExportDocumentsMessage VALIABLE_IS_CHECK_ERROR = new DatabaseExportDocumentsMessage("E003");
 	
+	/** 変数の値が指定されていません。変数名=[{0}] */
+	public static final DatabaseExportDocumentsMessage VALUE_IS_NOT_SET = new DatabaseExportDocumentsMessage("E004");
+	
 	protected DatabaseExportDocumentsMessage(String messageId) {
 		super(messageId);
 	}

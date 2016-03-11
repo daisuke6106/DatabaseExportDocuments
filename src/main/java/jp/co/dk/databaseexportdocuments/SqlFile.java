@@ -29,11 +29,11 @@ public class SqlFile extends TextFile {
 	/** コメントフォーマット */
 	protected static Pattern commentFormat = Pattern.compile("^(.*?)--.*$");
 	
-	/** 終了行フォーマット */
-	protected static Pattern endFormat     = Pattern.compile("^(.*?);.*$");
+	/** 未入力フォーマット */
+	protected static Pattern nothingFormat = Pattern.compile("^ +$");
 	
 	/** SQL一覧 */
-	protected List<Sql> sqlList;
+	protected List<Sql> sqlList = new ArrayList<>();
 	
 	/** 変数一覧 */
 	protected Set<Variable> varList = new HashSet<>();
@@ -53,8 +53,17 @@ public class SqlFile extends TextFile {
 	 */
 	public SqlFile(File file) throws DocumentException, DataStoreManagerException, DatabaseExportDocumentsException {
 		super(file);
-		this.sqlList = this.createSqlList();
-		for (Sql sql : this.sqlList) this.varList.addAll(sql.getVariableList());
+		List<String>  lines   = this.getLines();
+		StringBuilder allSql  = new StringBuilder();
+		for (String line : lines) {
+			Matcher commentMatcher = commentFormat.matcher(line);
+			if (commentMatcher.find()) line = commentMatcher.group(1);
+			allSql.append(line).append(" ");
+		}
+		String[] allSqlList = allSql.toString().split(";");
+		for (String sql : allSqlList) {
+			if (!nothingFormat.matcher(sql).find())this.sqlList.add(new Sql(sql));
+		}
 	}
 	
 	/**
@@ -73,29 +82,4 @@ public class SqlFile extends TextFile {
 		return new HashSet<>(this.varList);
 	}
 	
-	/**
-	 * SQLファイルに記述されたＳＱＬの一覧を取得します。
-	 * 
-	 * @return SQL一覧
-	 * @throws DocumentException 読み込みに失敗した場合
-	 * @throws DataStoreManagerException SQLオブジェクトの生成に失敗した場合
-	 */
-	private List<Sql> createSqlList() throws DocumentException, DataStoreManagerException {
-		List<Sql>     sqlList = new ArrayList<>();
-		List<String>  lines   = this.getLines();
-		StringBuilder sql     = new StringBuilder();
-		for (String line : lines) {
-			Matcher commentMatcher = commentFormat.matcher(line);
-			if (commentMatcher.find()) line = commentMatcher.group(1);
-			Matcher endMatcher     = endFormat.matcher(line);
-			if (endMatcher.find()) {
-				sql.append(endMatcher.group(1));
-				sqlList.add(new Sql(sql.toString()));
-				sql = new StringBuilder();
-			} else {
-				sql.append(line);
-			}
-		}
-		return sqlList;
-	}
 }

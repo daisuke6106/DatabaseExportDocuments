@@ -27,6 +27,9 @@ public class DatabaseExportDocumentsMessage extends AbstractMessage implements S
 	/** 変数の値が指定されていません。変数名=[{0}] */
 	public static final DatabaseExportDocumentsMessage VALUE_IS_NOT_SET = new DatabaseExportDocumentsMessage("E004");
 	
+	/** パラメータのフォーマットが不正です。パラメータ=[{0}] */
+	public static final DatabaseExportDocumentsMessage PARAMETER_FORMAT_IS_INVALID = new DatabaseExportDocumentsMessage("E005");
+	
 	protected DatabaseExportDocumentsMessage(String messageId) {
 		super(messageId);
 	}

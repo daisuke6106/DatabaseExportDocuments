@@ -46,4 +46,8 @@ public class Sql extends jp.co.dk.datastoremanager.rdb.Sql {
 			var.type.setParameter(this, param);
 		}
 	}
+	
+	public void setParameter(Parameters parameters) throws DatabaseExportDocumentsException {
+		this.setParameter(parameters.getParameter());
+	}
 }

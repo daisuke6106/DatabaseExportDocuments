@@ -2,9 +2,7 @@ package jp.co.dk.databaseexportdocuments;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,8 +33,8 @@ public class SqlFile extends TextFile {
 	/** SQL一覧 */
 	protected List<Sql> sqlList = new ArrayList<>();
 	
-	/** 変数一覧 */
-	protected Set<Variable> varList = new HashSet<>();
+	/** パラメータ */
+	protected Parameters parameter ;
 	
 	/**
 	 * <p>コンストラクタ</p>
@@ -74,12 +72,9 @@ public class SqlFile extends TextFile {
 		return new ArrayList<>(this.sqlList);
 	}
 	
-	/**
-	 * 変数一覧を取得する。
-	 * @return 変数一覧
-	 */
-	public Set<Variable> getVarList() {
-		return new HashSet<>(this.varList);
+	public void setParameter(Parameters parameter) throws DatabaseExportDocumentsException {
+		this.parameter = parameter;
+		for (Sql sql : this.sqlList) sql.setParameter(parameter);
 	}
 	
 }

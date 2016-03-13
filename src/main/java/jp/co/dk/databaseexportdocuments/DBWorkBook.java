@@ -39,6 +39,6 @@ public class DBWorkBook extends WorkBook {
 	 */
 	@Override
 	protected WorkSheet createSheet(WorkBook workBook, Sheet workSheet) {
-		return new DBWorkSheet(workBook, workSheet, dao);
+		return new DBWorkSheet(workBook, workSheet, dao, 1);
 	}
 }

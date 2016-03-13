@@ -23,11 +23,11 @@ public class DBWorkSheet extends WorkSheet {
 	
 	protected AbstractDataBaseAccessObject dao;
 	
-	public DBWorkSheet(WorkBook workBook, Sheet sheet, AbstractDataBaseAccessObject dao) {
+	public DBWorkSheet(WorkBook workBook, Sheet sheet, AbstractDataBaseAccessObject dao, int spanSize) {
 		super(workBook, sheet);
 		this.dao = dao;
 		this.lastIndex = this.getLastRowNum();
-		this.spanSize  = 1;
+		this.spanSize  = spanSize;
 	}
 	
 	public void setRowSpan(int spanSize) {

@@ -27,7 +27,7 @@ public class Parameters {
 					String value = variableMatcher.group(2);
 					parameter.put(name, value);
 				} else {
-					throw new DatabaseExportDocumentsException(DatabaseExportDocumentsMessage.PARAMETER_FORMAT_IS_INVALID);
+					throw new DatabaseExportDocumentsException(DatabaseExportDocumentsMessage.PARAMETER_FORMAT_IS_INVALID, paramStr);
 				}
 			}
 		}
